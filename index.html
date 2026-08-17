@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="يومياتي">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0a">
+<title>يومياتي</title>
+<style>
+:root{
+  --bg:#0a0a0a; --bg2:#141414; --bg3:#1c1c1c;
+  --gold:#d4af37; --gold-dim:#a8862c;
+  --text:#eee; --text-dim:#999; --border:#2a2a2a;
+  --green:#4caf50; --red:#e05a5a;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:'Segoe UI', Tahoma, Arial, sans-serif;
+  padding-bottom:env(safe-area-inset-bottom);
+  min-height:100vh;
+}
+header{
+  position:sticky; top:0; z-index:10;
+  background:linear-gradient(180deg,#111 0%,#0a0a0a 100%);
+  border-bottom:1px solid var(--border);
+  padding:14px 16px calc(14px + env(safe-area-inset-top)) 16px;
+  padding-top:calc(14px + env(safe-area-inset-top));
+  text-align:center;
+}
+header h1{margin:0; font-size:20px; color:var(--gold); letter-spacing:1px;}
+header .dates{font-size:12px; color:var(--text-dim); margin-top:6px;}
+header .clock{font-size:15px; color:var(--gold); margin-top:6px; font-variant-numeric:tabular-nums; letter-spacing:1px; direction:ltr; display:inline-block;}
+nav{display:flex; gap:8px; padding:10px 16px; overflow-x:auto; border-bottom:1px solid var(--border);}
+nav button{
+  flex:1; background:var(--bg3); border:1px solid var(--border); color:var(--text-dim);
+  padding:8px 4px; border-radius:8px; font-size:13px; cursor:pointer;
+}
+nav button.active{border-color:var(--gold); color:var(--gold); background:#1f1a0d;}
+main{padding:16px; max-width:640px; margin:0 auto;}
+.card{background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:16px; margin-bottom:14px;}
+.card h2{margin:0 0 12px 0; font-size:15px; color:var(--gold-dim); display:flex; align-items:center; gap:8px;}
+.day-nav{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+.day-nav button{background:var(--bg3); border:1px solid var(--border); color:var(--gold); width:36px; height:36px; border-radius:10px; font-size:16px;}
+.day-nav .day-label{text-align:center; flex:1;}
+.day-nav .day-label .g{font-size:14px; color:var(--text);}
+.day-nav .day-label .h{font-size:11px; color:var(--text-dim);}
+.mood-row{display:flex; gap:8px; justify-content:space-between;}
+.mood-btn{
+  flex:1; background:var(--bg3); border:1px solid var(--border); border-radius:10px;
+  padding:10px 0; font-size:24px; cursor:pointer; opacity:.55;
+}
+.mood-btn.selected{border-color:var(--gold); background:#1f1a0d; opacity:1;}
+.gratitude-item{display:flex; align-items:center; gap:8px; margin-bottom:8px;}
+.gratitude-item .num{color:var(--gold); font-size:13px; width:16px;}
+input[type=text], textarea{
+  width:100%; background:var(--bg3); border:1px solid var(--border); color:var(--text);
+  border-radius:8px; padding:9px 10px; font-size:14px; font-family:inherit;
+}
+textarea{min-height:90px; resize:vertical;}
+.task-row{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+.task-row .chk{
+  width:22px; height:22px; border-radius:6px; border:1px solid var(--gold-dim);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; color:var(--gold);
+}
+.task-row .chk.done{background:var(--gold); color:#000;}
+.task-row input{flex:1;}
+.task-row.done input{color:var(--text-dim); text-decoration:line-through;}
+.save-hint{font-size:11px; color:var(--text-dim); text-align:center; margin-top:4px;}
+.archive-item{
+  background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:10px 12px;
+  margin-bottom:8px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;
+}
+.archive-item .d{font-size:13px;}
+.archive-item .m{font-size:20px;}
+.archive-item .snippet{font-size:11px; color:var(--text-dim); margin-top:3px;}
+.search-box{margin-bottom:12px;}
+.empty{text-align:center; color:var(--text-dim); font-size:13px; padding:30px 0;}
+.btn-row{display:flex; gap:10px; margin-top:6px;}
+.btn{
+  flex:1; padding:11px; border-radius:10px; border:1px solid var(--border);
+  background:var(--bg3); color:var(--gold); font-size:13px; cursor:pointer; text-align:center;
+}
+.btn.primary{background:var(--gold); color:#000; border-color:var(--gold); font-weight:bold;}
+.toast{
+  position:fixed; bottom:calc(20px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%);
+  background:var(--gold); color:#000; padding:10px 20px; border-radius:20px; font-size:13px;
+  font-weight:bold; opacity:0; transition:opacity .3s; pointer-events:none; z-index:100; white-space:nowrap;
+}
+.toast.show{opacity:1;}
+.hidden{display:none !important;}
+.stat-row{display:flex; gap:10px; margin-bottom:14px;}
+.stat{flex:1; background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:12px; text-align:center;}
+.stat .n{font-size:20px; color:var(--gold); font-weight:bold;}
+.stat .l{font-size:11px; color:var(--text-dim); margin-top:2px;}
+input[type=file]{display:none;}
+.add-btn{
+  width:100%; background:transparent; border:1px dashed var(--border); color:var(--gold-dim);
+  border-radius:8px; padding:8px; font-size:13px; cursor:pointer; margin-top:4px;
+}
+.add-btn:active{background:var(--bg3);}
+.row-remove{
+  width:22px; height:22px; flex-shrink:0; border-radius:6px; border:1px solid var(--border);
+  color:var(--red); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px;
+}
+.prayer-strip{display:flex; justify-content:space-between; gap:4px;}
+.prayer-item{flex:1; text-align:center; background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:8px 2px;}
+.prayer-item.next{border-color:var(--gold); background:#1f1a0d;}
+.prayer-item .pn{font-size:11px; color:var(--text-dim);}
+.prayer-item.next .pn{color:var(--gold);}
+.prayer-item .pt{font-size:12px; margin-top:3px; direction:ltr;}
+.prayer-countdown{text-align:center; font-size:12px; color:var(--gold-dim); margin-top:10px;}
+.reminder-row{display:flex; align-items:center; justify-content:space-between; margin-top:10px;}
+.switch{width:44px; height:24px; border-radius:12px; background:var(--bg3); border:1px solid var(--border); position:relative; cursor:pointer; flex-shrink:0;}
+.switch .knob{position:absolute; top:2px; right:2px; width:18px; height:18px; border-radius:50%; background:var(--text-dim); transition:.2s;}
+.switch.on{background:#1f1a0d; border-color:var(--gold);}
+.switch.on .knob{background:var(--gold); right:22px;}
+.settings-label{font-size:13px; color:var(--text);}
+.settings-sub{font-size:11px; color:var(--text-dim); margin-top:2px;}
+.loc-status{font-size:12px; color:var(--text-dim); margin-top:8px;}
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200;
+  display:flex; align-items:center; justify-content:center; padding:20px;
+}
+.modal-box{
+  background:var(--bg2); border:1px solid var(--gold-dim); border-radius:14px;
+  padding:18px; max-width:400px; width:100%;
+}
+.modal-box h3{margin:0 0 10px 0; color:var(--gold); font-size:16px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="position:relative;">
+    <h1 data-i18n="appTitle">📔 يومياتي</h1>
+    <button data-action="openLangModal" style="position:absolute; left:0; top:0; background:var(--bg3); border:1px solid var(--border); color:var(--gold); border-radius:8px; padding:5px 9px; font-size:13px; cursor:pointer;">🌐</button>
+  </div>
+  <div class="dates" id="headerDates">—</div>
+  <div class="clock" id="liveClock">—</div>
+</header>
+
+<nav>
+  <button class="active" data-action="tab" data-tab="today" data-i18n="tabToday">اليوم</button>
+  <button data-action="tab" data-tab="archive" data-i18n="tabArchive">الأرشيف</button>
+  <button data-action="tab" data-tab="settings" data-i18n="tabSettings">إعدادات</button>
+</nav>
+
+<main>
+
+  <!-- TODAY TAB -->
+  <div id="tab-today">
+    <div class="card">
+      <div class="day-nav">
+        <button data-action="prevDay">‹</button>
+        <div class="day-label">
+          <div class="g" id="viewDateG">—</div>
+          <div class="h" id="viewDateH">—</div>
+        </div>
+        <button data-action="nextDay" id="nextDayBtn">›</button>
+      </div>
+    </div>
+
+    <div class="card" id="prayerCard">
+      <h2 data-i18n="prayerTimes">🕌 مواقيت الصلاة</h2>
+      <div class="prayer-strip" id="prayerStrip"></div>
+      <div class="prayer-countdown" id="prayerCountdown"></div>
+      <div class="settings-sub" id="prayerSource" style="text-align:center; margin-top:4px;"></div>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="moodLabel">😊 المزاج</h2>
+      <div class="mood-row" id="moodRow"></div>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="gratitudeLabel">🙏 ممتن اليوم لـ</h2>
+      <div id="gratitudeList"></div>
+      <div class="add-btn" data-action="addGratitude" data-i18n="addGratitudeBtn">+ إضافة سطر امتنان</div>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="tasksLabel">✅ المهام</h2>
+      <div id="taskList"></div>
+      <div class="add-btn" data-action="addTask" data-i18n="addTaskBtn">+ إضافة مهمة</div>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="noteLabel">📝 ملاحظة حرة</h2>
+      <textarea id="noteBox" data-i18n-ph="notePh" placeholder="اكتب أي شيء يخطر ببالك..."></textarea>
+    </div>
+  </div>
+
+  <!-- ARCHIVE TAB -->
+  <div id="tab-archive" class="hidden">
+    <div class="card">
+      <div class="stat-row">
+        <div class="stat"><div class="n" id="statTotal">0</div><div class="l" data-i18n="statDays">يوم مسجل</div></div>
+        <div class="stat"><div class="n" id="statStreak">0</div><div class="l" data-i18n="statStreak">أيام متتالية</div></div>
+      </div>
+      <input type="text" class="search-box" id="searchBox" data-i18n-ph="searchPh" placeholder="🔍 ابحث في الملاحظات والامتنان...">
+      <div id="archiveList"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div id="tab-settings" class="hidden">
+    <div class="card">
+      <h2 data-i18n="locTitle">🕌 موقعك (لحساب أوقات الصلاة)</h2>
+      <div class="btn-row">
+        <div class="btn primary" data-action="requestLocation" data-i18n="autoLocBtn">تحديد موقعي تلقائيًا</div>
+      </div>
+      <div class="loc-status" id="locStatus">—</div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <input type="text" inputmode="decimal" id="manualLat" data-i18n-ph="latPh" placeholder="خط العرض (Lat)" style="flex:1;">
+        <input type="text" inputmode="decimal" id="manualLng" data-i18n-ph="lngPh" placeholder="خط الطول (Lng)" style="flex:1;">
+      </div>
+      <div class="btn-row">
+        <div class="btn" data-action="saveManualLoc" data-i18n="saveLocBtn">حفظ الموقع يدويًا</div>
+      </div>
+      <div class="settings-sub" data-i18n="locNote" style="margin-top:6px;">
+        ملاحظة: تحديد الموقع التلقائي لا يعمل عند فتح الملف كرابط data: (كما يظهر بشريط العنوان). ارفع الملف على GitHub Pages أو افتحه من تطبيق الملفات ليعمل تلقائيًا — أو استخدم الإدخال اليدوي أعلاه.
+      </div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="reminderTitle">🔔 تذكير تعبئة اليومية</h2>
+      <div class="reminder-row">
+        <div>
+          <div class="settings-label" data-i18n="reminderLabel">ذكّرني بعد صلاة العشاء</div>
+          <div class="settings-sub" data-i18n="reminderSub">إشعار يومي بعد وقت العشاء لتعبئة يومياتك (يعمل أثناء فتح التطبيق)</div>
+        </div>
+        <div class="switch" id="reminderSwitch" data-action="toggleReminder"><div class="knob"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="backupTitle">💾 النسخ الاحتياطي</h2>
+      <p style="font-size:13px; color:var(--text-dim); margin-top:0;" data-i18n="backupDesc">صدّر نسخة كاملة من يومياتك كملف HTML يحتوي كل بياناتك، أو استورد نسخة سابقة.</p>
+      <div class="btn-row">
+        <div class="btn primary" data-action="exportBackup" data-i18n="exportBackupBtn">تصدير نسخة احتياطية</div>
+        <div class="btn" data-action="triggerImport" data-i18n="importBackupBtn">استيراد نسخة</div>
+      </div>
+      <input type="file" id="importFile" accept=".html">
+    </div>
+    <div class="card">
+      <h2 data-i18n="jsonTitle">📤 JSON</h2>
+      <p style="font-size:13px; color:var(--text-dim); margin-top:0;" data-i18n="jsonDesc">لتحليل بياناتك أو نقلها لأداة أخرى، أو استيراد بيانات من ملف JSON.</p>
+      <div class="btn-row">
+        <div class="btn" data-action="exportJSON" data-i18n="exportJsonBtn">تنزيل JSON</div>
+        <div class="btn" data-action="triggerImportJSON" data-i18n="importJsonBtn">استيراد من JSON</div>
+      </div>
+      <input type="file" id="importJSONFile" accept=".json">
+    </div>
+  </div>
+
+</main>
+
+<div class="modal-overlay hidden" id="importModal">
+  <div class="modal-box">
+    <h3 id="importModalTitle" data-i18n="importModalTitle">تأكيد الاستيراد</h3>
+    <div id="importModalBody" style="font-size:13px; color:var(--text-dim); line-height:1.7;"></div>
+    <div class="btn-row" style="margin-top:16px;">
+      <div class="btn" data-action="cancelImport" data-i18n="cancelBtn">إلغاء</div>
+      <div class="btn primary" data-action="confirmImport" data-i18n="confirmImportBtn">استبدال البيانات</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="langModal">
+  <div class="modal-box">
+    <h3 data-i18n="langModalTitle">اختر اللغة / Choose Language</h3>
+    <div class="btn-row" style="margin-top:4px;">
+      <div class="btn" data-action="setLang" data-lang="ar">🇸🇦 العربية</div>
+      <div class="btn" data-action="setLang" data-lang="en">🇬🇧 English</div>
+    </div>
+    <div class="btn-row" style="margin-top:10px;">
+      <div class="btn" data-action="closeLangModal" data-i18n="cancelBtn">إلغاء</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========= DATA_EMBED_START =========
+{"entries":{}}
+========= DATA_EMBED_END ========= */
+
+const STORAGE_KEY = 'yawmiyati_data';
+const MOODS = ['😄','🙂','😐','😔','😢','😤'];
+
+const STRINGS = {
+  ar:{
+    appTitle:'📔 يومياتي',
+    tabToday:'اليوم', tabArchive:'الأرشيف', tabSettings:'إعدادات',
+    prayerTimes:'🕌 مواقيت الصلاة', moodLabel:'😊 المزاج',
+    gratitudeLabel:'🙏 ممتن اليوم لـ', addGratitudeBtn:'+ إضافة سطر امتنان',
+    tasksLabel:'✅ المهام', addTaskBtn:'+ إضافة مهمة',
+    noteLabel:'📝 ملاحظة حرة', notePh:'اكتب أي شيء يخطر ببالك...',
+    statDays:'يوم مسجل', statStreak:'أيام متتالية', searchPh:'🔍 ابحث في الملاحظات والامتنان...',
+    locTitle:'🕌 موقعك (لحساب أوقات الصلاة)', autoLocBtn:'تحديد موقعي تلقائيًا',
+    locSet:(lat,lng)=>`تم تحديد الموقع ✓ (${lat}, ${lng})`,
+    locNotSet:'لم يُحدَّد الموقع بعد — سيتم استخدام موقع افتراضي (مُحايل عسير) حتى تحدد موقعك.',
+    latPh:'خط العرض (Lat)', lngPh:'خط الطول (Lng)', saveLocBtn:'حفظ الموقع يدويًا',
+    locNote:'ملاحظة: تحديد الموقع التلقائي لا يعمل عند فتح الملف كرابط data: (كما يظهر بشريط العنوان). ارفع الملف على GitHub Pages أو افتحه من تطبيق الملفات ليعمل تلقائيًا — أو استخدم الإدخال اليدوي أعلاه.',
+    reminderTitle:'🔔 تذكير تعبئة اليومية', reminderLabel:'ذكّرني بعد صلاة العشاء',
+    reminderSub:'إشعار يومي بعد وقت العشاء لتعبئة يومياتك (يعمل أثناء فتح التطبيق)',
+    backupTitle:'💾 النسخ الاحتياطي', backupDesc:'صدّر نسخة كاملة من يومياتك كملف HTML يحتوي كل بياناتك، أو استورد نسخة سابقة.',
+    exportBackupBtn:'تصدير نسخة احتياطية', importBackupBtn:'استيراد نسخة',
+    jsonTitle:'📤 JSON', jsonDesc:'لتحليل بياناتك أو نقلها لأداة أخرى، أو استيراد بيانات من ملف JSON.',
+    exportJsonBtn:'تنزيل JSON', importJsonBtn:'استيراد من JSON',
+    importModalTitle:'تأكيد الاستيراد', cancelBtn:'إلغاء', confirmImportBtn:'استبدال البيانات',
+    langModalTitle:'اختر اللغة / Choose Language',
+    emptyArchive:'لا توجد أيام مسجلة بعد',
+    toastBackupExported:'تم تصدير النسخة الاحتياطية ✓', toastJsonExported:'تم تصدير JSON ✓',
+    toastImportBadFile:'لم يتم العثور على بيانات صالحة بالملف', toastImportError:'خطأ في قراءة الملف — تأكد إنه ملف JSON أو نسخة صحيحة',
+    toastImported:'تم استيراد البيانات ✓', toastLocError:'الموقع غير مدعوم في هذا المتصفح',
+    toastLocSet:'تم تحديد موقعك ✓', toastLocDenied:'تعذّر الوصول للموقع — تأكد من إذن الوصول',
+    toastReminderOn:'تم تفعيل التذكير 🔔', toastReminderOff:'تم إيقاف التذكير',
+    toastBadCoords:'أدخل إحداثيات صحيحة', toastLocSaved:'تم حفظ الموقع ✓',
+    toastPrayerReminder:'🌙 تذكير: وقت تعبئة يومياتك', notifTitle:'يومياتي', notifBody:'حان وقت تسجيل يومياتك بعد صلاة العشاء 🌙',
+    importFile:'الملف', importDaysFound:(n)=>`يحتوي على <b style="color:var(--gold)">${n}</b> يوم مسجل.`,
+    importWarn:(n)=>`⚠️ سيتم <b style="color:var(--red)">استبدال</b> بياناتك الحالية (${n} يوم) بالكامل بمحتوى هذا الملف. هذا الإجراء لا يمكن التراجع عنه — يُفضّل تصدير نسخة احتياطية من بياناتك الحالية أولًا.`,
+    prayerSourceSet:'الموقع المستخدم', srcManual:'محدَّد يدويًا/تلقائيًا', srcDefault:'افتراضي - محايل عسير',
+    prayerNext:(name,h,m)=>`${name} بعد ${h} س ${m} د`,
+    taskPh:(i)=>`مهمة ${i}...`, gratitudePh:'شيء أنت ممتن له...',
+    prayerNames:{'الفجر':'الفجر','الظهر':'الظهر','العصر':'العصر','المغرب':'المغرب','العشاء':'العشاء'},
+  },
+  en:{
+    appTitle:'📔 My Journal',
+    tabToday:'Today', tabArchive:'Archive', tabSettings:'Settings',
+    prayerTimes:'🕌 Prayer Times', moodLabel:'😊 Mood',
+    gratitudeLabel:'🙏 Grateful for today', addGratitudeBtn:'+ Add gratitude line',
+    tasksLabel:'✅ Tasks', addTaskBtn:'+ Add task',
+    noteLabel:'📝 Free note', notePh:'Write anything on your mind...',
+    statDays:'days logged', statStreak:'day streak', searchPh:'🔍 Search notes and gratitude...',
+    locTitle:'🕌 Your location (for prayer times)', autoLocBtn:'Detect my location automatically',
+    locSet:(lat,lng)=>`Location set ✓ (${lat}, ${lng})`,
+    locNotSet:'Location not set yet — using a default location (Muhayil Asir) until you set yours.',
+    latPh:'Latitude', lngPh:'Longitude', saveLocBtn:'Save location manually',
+    locNote:'Note: automatic location detection does not work when the file is opened as a data: link (as shown in the address bar). Upload the file to GitHub Pages or open it from the Files app for it to work automatically — or use manual entry above.',
+    reminderTitle:'🔔 Journal entry reminder', reminderLabel:'Remind me after Isha prayer',
+    reminderSub:'Daily notification after Isha time to fill your journal (works while the app is open)',
+    backupTitle:'💾 Backup', backupDesc:'Export a complete backup of your journal as an HTML file containing all your data, or import a previous backup.',
+    exportBackupBtn:'Export backup', importBackupBtn:'Import backup',
+    jsonTitle:'📤 JSON', jsonDesc:'Analyze your data, move it to another tool, or import data from a JSON file.',
+    exportJsonBtn:'Download JSON', importJsonBtn:'Import from JSON',
+    importModalTitle:'Confirm Import', cancelBtn:'Cancel', confirmImportBtn:'Replace data',
+    langModalTitle:'Choose Language / اختر اللغة',
+    emptyArchive:'No days logged yet',
+    toastBackupExported:'Backup exported ✓', toastJsonExported:'JSON exported ✓',
+    toastImportBadFile:'No valid data found in the file', toastImportError:'Error reading the file — make sure it is a valid JSON or backup file',
+    toastImported:'Data imported ✓', toastLocError:'Geolocation is not supported in this browser',
+    toastLocSet:'Your location has been set ✓', toastLocDenied:'Could not access location — check permission',
+    toastReminderOn:'Reminder enabled 🔔', toastReminderOff:'Reminder disabled',
+    toastBadCoords:'Enter valid coordinates', toastLocSaved:'Location saved ✓',
+    toastPrayerReminder:'🌙 Reminder: time to fill your journal', notifTitle:'My Journal', notifBody:'Time to fill your journal after Isha prayer 🌙',
+    importFile:'File', importDaysFound:(n)=>`Contains <b style="color:var(--gold)">${n}</b> logged day(s).`,
+    importWarn:(n)=>`⚠️ This will <b style="color:var(--red)">replace</b> your current data (${n} day(s)) entirely with this file's content. This cannot be undone — it's recommended to export a backup of your current data first.`,
+    prayerSourceSet:'Location used', srcManual:'set manually/automatically', srcDefault:'default - Muhayil Asir',
+    prayerNext:(name,h,m)=>`${name} in ${h}h ${m}m`,
+    taskPh:(i)=>`Task ${i}...`, gratitudePh:'Something you are grateful for...',
+    prayerNames:{'الفجر':'Fajr','الظهر':'Dhuhr','العصر':'Asr','المغرب':'Maghrib','العشاء':'Isha'},
+  }
+};
+
+function loadEmbeddedData(){
+  try{
+    const html = document.documentElement.outerHTML;
+    const m = html.match(/DATA_EMBED_START =+\s*([\s\S]*?)\s*=+ DATA_EMBED_END/);
+    if(m && m[1]){
+      const parsed = JSON.parse(m[1].trim());
+      if(parsed && parsed.entries) return parsed;
+    }
+  }catch(e){}
+  return null;
+}
+
+function loadData(){
+  try{
+    const ls = localStorage.getItem(STORAGE_KEY);
+    if(ls) return JSON.parse(ls);
+  }catch(e){}
+  const embedded = loadEmbeddedData();
+  if(embedded) return embedded;
+  return {entries:{}};
+}
+
+let DATA = loadData();
+let viewDate = new Date();
+let currentTab = 'today';
+
+function fmtKey(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function todayKey(){ return fmtKey(new Date()); }
+
+function gregorianStr(d){
+  const locale = SETTINGS.lang==='en' ? 'en-US' : 'ar-SA';
+  return new Intl.DateTimeFormat(locale,{calendar:'gregory', weekday:'long', day:'numeric', month:'long', year:'numeric'}).format(d);
+}
+function hijriStr(d){
+  try{
+    const locale = SETTINGS.lang==='en' ? 'en-u-ca-islamic-umalqura' : 'ar-SA-u-ca-islamic-umalqura';
+    return new Intl.DateTimeFormat(locale,{day:'numeric', month:'long', year:'numeric'}).format(d);
+  }catch(e){ return ''; }
+}
+
+function saveData(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA)); }catch(e){}
+}
+
+function getEntry(key){
+  if(!DATA.entries[key]){
+    DATA.entries[key] = {mood:null, gratitude:['','',''], tasks:[{text:'',done:false},{text:'',done:false},{text:'',done:false}], note:''};
+  }
+  return DATA.entries[key];
+}
+
+/* ---------- SETTINGS (location + reminder) ---------- */
+const SETTINGS_KEY = 'yawmiyati_settings';
+function loadSettings(){
+  try{
+    const s = localStorage.getItem(SETTINGS_KEY);
+    if(s) return Object.assign({lat:18.62, lng:42.08, tz:3, locSet:true, reminderOn:false, lastNotified:null, lang:'ar'}, JSON.parse(s));
+  }catch(e){}
+  return {lat:18.62, lng:42.08, tz:3, locSet:true, reminderOn:false, lastNotified:null, lang:'ar'};
+}
+let SETTINGS = loadSettings();
+function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(SETTINGS)); }catch(e){} }
+function T(){ return STRINGS[SETTINGS.lang] || STRINGS.ar; }
+
+function applyLanguage(lang){
+  if(!STRINGS[lang]) return;
+  SETTINGS.lang = lang;
+  saveSettings();
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang==='ar' ? 'rtl' : 'ltr';
+  document.title = T().appTitle.replace(/^\S+\s/, '');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.dataset.i18n;
+    if(T()[key] !== undefined) el.textContent = T()[key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    const key = el.dataset.i18nPh;
+    if(T()[key] !== undefined) el.placeholder = T()[key];
+  });
+  renderHeader();
+  renderToday();
+  renderLocStatus();
+  renderPrayerCard();
+  if(currentTab==='archive') renderArchive(document.getElementById('searchBox').value);
+}
+
+/* ---------- LIVE CLOCK (12-hour) ---------- */
+function to12h(h){
+  const isEn = SETTINGS.lang==='en';
+  const period = h>=12 ? (isEn?'PM':'م') : (isEn?'AM':'ص');
+  let h12 = h % 12;
+  if(h12===0) h12 = 12;
+  return {h12, period};
+}
+function updateClock(){
+  const now = new Date();
+  const {h12, period} = to12h(now.getHours());
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('liveClock').textContent = `${String(h12).padStart(2,'0')}:${m}:${s} ${period}`;
+}
+
+/* ---------- PRAYER TIMES CALCULATION ---------- */
+function fixAngle(a){ a = a - 360*Math.floor(a/360); return a<0?a+360:a; }
+function fixHour(a){ a = a - 24*Math.floor(a/24); return a<0?a+24:a; }
+const dsin = d=>Math.sin(d*Math.PI/180);
+const dcos = d=>Math.cos(d*Math.PI/180);
+const dtan = d=>Math.tan(d*Math.PI/180);
+const darcsin = x=>Math.asin(x)*180/Math.PI;
+const darccos = x=>Math.acos(x)*180/Math.PI;
+const darccot = x=>Math.atan(1/x)*180/Math.PI;
+const darctan2 = (y,x)=>Math.atan2(y,x)*180/Math.PI;
+
+function julianDate(y,m,d){
+  if(m<=2){ y-=1; m+=12; }
+  const A = Math.floor(y/100);
+  const B = 2 - A + Math.floor(A/4);
+  return Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + B - 1524.5;
+}
+function sunPos(jd){
+  const D = jd - 2451545.0;
+  const g = fixAngle(357.529 + 0.98560028*D);
+  const q = fixAngle(280.459 + 0.98564736*D);
+  const L = fixAngle(q + 1.915*dsin(g) + 0.020*dsin(2*g));
+  const e = 23.439 - 0.00000036*D;
+  let RA = fixHour(darctan2(dcos(e)*dsin(L), dcos(L))/15);
+  const eqt = q/15 - RA;
+  const decl = darcsin(dsin(e)*dsin(L));
+  return {decl, eqt};
+}
+function midDay(jd, lng, tz){
+  const {eqt} = sunPos(jd);
+  return fixHour(12 - lng/15 - eqt + tz);
+}
+function sunAngleTime(angle, jd, lat, lng, tz, dir){
+  const {decl, eqt} = sunPos(jd);
+  const noon = fixHour(12 - lng/15 - eqt + tz);
+  const num = -dsin(angle) - dsin(decl)*dsin(lat);
+  const den = dcos(decl)*dcos(lat);
+  const cosArg = num/den;
+  if(cosArg>1||cosArg<-1) return null;
+  const t = darccos(cosArg)/15;
+  return dir==='ccw' ? noon - t : noon + t;
+}
+function asrTime(factor, jd, lat, lng, tz){
+  const {decl} = sunPos(jd);
+  const noon = midDay(jd, lng, tz);
+  const angle = -darccot(factor + dtan(Math.abs(lat-decl)));
+  return sunAngleTime(angle, jd, lat, lng, tz, 'cw');
+}
+function computePrayerTimes(date, lat, lng, tz){
+  const jd = julianDate(date.getFullYear(), date.getMonth()+1, date.getDate());
+  const fajr = sunAngleTime(18.5, jd, lat, lng, tz, 'ccw');
+  const dhuhr = midDay(jd, lng, tz);
+  const asr = asrTime(1, jd, lat, lng, tz);
+  const maghrib = sunAngleTime(0.833, jd, lat, lng, tz, 'cw');
+  const isha = maghrib===null ? null : fixHour(maghrib + 90/60);
+  return {'الفجر':fajr, 'الظهر':dhuhr, 'العصر':asr, 'المغرب':maghrib, 'العشاء':isha};
+}function hoursToHM(t){
+  if(t===null || t===undefined) return {h:0,m:0,label:'—'};
+  t = fixHour(t);
+  let h = Math.floor(t);
+  let m = Math.round((t-h)*60);
+  if(m===60){m=0;h=fixHour(h+1);}
+  const {h12, period} = to12h(h);
+  return {h, m, label:String(h12).padStart(2,'0')+':'+String(m).padStart(2,'0')+' '+period};
+}
+
+function renderPrayerCard(){
+  const now = new Date();
+  const times = computePrayerTimes(now, SETTINGS.lat, SETTINGS.lng, SETTINGS.tz);
+  const nowHours = now.getHours() + now.getMinutes()/60;
+  const names = Object.keys(times);
+  let nextName = null, nextDiff = Infinity;
+  names.forEach(n=>{
+    const t = times[n];
+    if(t===null) return;
+    let diff = t - nowHours;
+    if(diff < 0) diff += 24;
+    if(diff < nextDiff){ nextDiff = diff; nextName = n; }
+  });
+  const strip = document.getElementById('prayerStrip');
+  strip.innerHTML = names.map(n=>{
+    const hm = hoursToHM(times[n]);
+    return `<div class="prayer-item ${n===nextName?'next':''}"><div class="pn">${T().prayerNames[n]}</div><div class="pt">${hm.label}</div></div>`;
+  }).join('');
+  const cd = document.getElementById('prayerCountdown');
+  if(nextName){
+    const hh = Math.floor(nextDiff);
+    const mm = Math.round((nextDiff-hh)*60);
+    cd.textContent = T().prayerNext(T().prayerNames[nextName], hh, mm);
+  } else {
+    cd.textContent = '';
+  }
+  const src = document.getElementById('prayerSource');
+  if(src){
+    src.textContent = `${T().prayerSourceSet}: ${SETTINGS.lat.toFixed(3)}, ${SETTINGS.lng.toFixed(3)} (${SETTINGS.locSet?T().srcManual:T().srcDefault})`;
+  }
+  return times;
+}
+
+/* ---------- REMINDER ---------- */
+function checkReminder(){
+  if(!SETTINGS.reminderOn) return;
+  const now = new Date();
+  const times = computePrayerTimes(now, SETTINGS.lat, SETTINGS.lng, SETTINGS.tz);
+  const isha = times['العشاء'];
+  if(isha===null) return;
+  const nowHours = now.getHours() + now.getMinutes()/60;
+  const key = todayKey();
+  if(nowHours >= isha && SETTINGS.lastNotified !== key){
+    SETTINGS.lastNotified = key;
+    saveSettings();
+    if(window.Notification && Notification.permission === 'granted'){
+      try{ new Notification(T().notifTitle, {body:T().notifBody}); }catch(e){}
+    }
+    showToast(T().toastPrayerReminder);
+  }
+}
+
+function renderLocStatus(){
+  const el = document.getElementById('locStatus');
+  if(SETTINGS.locSet){
+    el.textContent = T().locSet(SETTINGS.lat.toFixed(2), SETTINGS.lng.toFixed(2));
+  } else {
+    el.textContent = T().locNotSet;
+  }
+  const latInput = document.getElementById('manualLat');
+  const lngInput = document.getElementById('manualLng');
+  if(latInput && !latInput.value) latInput.value = SETTINGS.lat;
+  if(lngInput && !lngInput.value) lngInput.value = SETTINGS.lng;
+}
+
+function renderReminderSwitch(){
+  document.getElementById('reminderSwitch').classList.toggle('on', SETTINGS.reminderOn);
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+/* ---------- RENDER TODAY ---------- */
+function renderHeader(){
+  const now = new Date();
+  document.getElementById('headerDates').textContent = gregorianStr(now) + ' • ' + hijriStr(now);
+}
+
+function renderDayNav(){
+  const key = fmtKey(viewDate);
+  document.getElementById('viewDateG').textContent = gregorianStr(viewDate);
+  document.getElementById('viewDateH').textContent = hijriStr(viewDate);
+  const isToday = key === todayKey();
+  document.getElementById('nextDayBtn').style.opacity = isToday ? '0.3' : '1';
+  document.getElementById('nextDayBtn').style.pointerEvents = isToday ? 'none' : 'auto';
+}
+
+function renderMood(){
+  const key = fmtKey(viewDate);
+  const entry = getEntry(key);
+  const row = document.getElementById('moodRow');
+  row.innerHTML = MOODS.map((m,i)=>
+    `<div class="mood-btn ${entry.mood===i?'selected':''}" data-action="setMood" data-idx="${i}">${m}</div>`
+  ).join('');
+}
+
+function renderGratitude(){
+  const key = fmtKey(viewDate);
+  const entry = getEntry(key);
+  const box = document.getElementById('gratitudeList');
+  box.innerHTML = entry.gratitude.map((g,i)=>
+    `<div class="gratitude-item">
+      <span class="num">${i+1}.</span>
+      <input type="text" data-action="gratitude" data-idx="${i}" value="${escapeAttr(g)}" placeholder="${escapeAttr(T().gratitudePh)}">
+      ${entry.gratitude.length>1 ? `<div class="row-remove" data-action="removeGratitude" data-idx="${i}">×</div>` : ''}
+    </div>`
+  ).join('');
+}
+
+function renderTasks(){
+  const key = fmtKey(viewDate);
+  const entry = getEntry(key);
+  const box = document.getElementById('taskList');
+  box.innerHTML = entry.tasks.map((t,i)=>
+    `<div class="task-row ${t.done?'done':''}">
+      <div class="chk ${t.done?'done':''}" data-action="toggleTask" data-idx="${i}">${t.done?'✓':''}</div>
+      <input type="text" data-action="taskText" data-idx="${i}" value="${escapeAttr(t.text)}" placeholder="${escapeAttr(T().taskPh(i+1))}">
+      ${entry.tasks.length>1 ? `<div class="row-remove" data-action="removeTask" data-idx="${i}">×</div>` : ''}
+    </div>`
+  ).join('');
+}
+
+function renderNote(){
+  const key = fmtKey(viewDate);
+  const entry = getEntry(key);
+  document.getElementById('noteBox').value = entry.note || '';
+}
+
+function renderToday(){
+  renderDayNav();
+  renderMood();
+  renderGratitude();
+  renderTasks();
+  renderNote();
+}
+
+function escapeAttr(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+
+/* ---------- ARCHIVE ---------- */
+function computeStreak(){
+  let streak = 0;
+  let d = new Date();
+  while(true){
+    const key = fmtKey(d);
+    const e = DATA.entries[key];
+    const hasContent = e && (e.mood!==null || e.note || e.gratitude.some(g=>g) || e.tasks.some(t=>t.text));
+    if(hasContent){ streak++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  return streak;
+}
+
+function renderArchive(filter){
+  const list = document.getElementById('archiveList');
+  const keys = Object.keys(DATA.entries).sort().reverse();
+  document.getElementById('statTotal').textContent = keys.filter(k=>{
+    const e = DATA.entries[k];
+    return e.mood!==null || e.note || e.gratitude.some(g=>g) || e.tasks.some(t=>t.text);
+  }).length;
+  document.getElementById('statStreak').textContent = computeStreak();
+
+  let filtered = keys;
+  if(filter){
+    const f = filter.trim().toLowerCase();
+    filtered = keys.filter(k=>{
+      const e = DATA.entries[k];
+      const hay = [e.note, ...e.gratitude, ...e.tasks.map(t=>t.text)].join(' ').toLowerCase();
+      return hay.includes(f);
+    });
+  }
+
+  filtered = filtered.filter(k=>{
+    const e = DATA.entries[k];
+    return e.mood!==null || e.note || e.gratitude.some(g=>g) || e.tasks.some(t=>t.text);
+  });
+
+  if(filtered.length===0){
+    list.innerHTML = `<div class="empty">${T().emptyArchive}</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(k=>{
+    const e = DATA.entries[k];
+    const d = new Date(k+'T12:00:00');
+    const snippet = e.note ? e.note.slice(0,50) : (e.gratitude.filter(g=>g)[0] || '');
+    return `<div class="archive-item" data-action="openDay" data-key="${k}">
+      <div>
+        <div class="d">${gregorianStr(d)}</div>
+        ${snippet ? `<div class="snippet">${escapeAttr(snippet)}</div>` : ''}
+      </div>
+      <div class="m">${e.mood!==null && e.mood!==undefined ? MOODS[e.mood] : '—'}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- TABS ---------- */
+function switchTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  ['today','archive','settings'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('hidden', t!==tab);
+  });
+  if(tab==='archive') renderArchive(document.getElementById('searchBox').value);
+  if(tab==='today') renderPrayerCard();
+  if(tab==='settings') renderLocStatus();
+}
+
+/* ---------- EXPORT / IMPORT ---------- */
+function exportBackup(){
+  const html = document.documentElement.outerHTML;
+  const dataStr = JSON.stringify(DATA);
+  const newHtml = html.replace(
+    /DATA_EMBED_START =+\s*[\s\S]*?\s*=+ DATA_EMBED_END/,
+    `DATA_EMBED_START =========
+${dataStr}
+========= DATA_EMBED_END`
+  );
+  const blob = new Blob(['<!DOCTYPE html>\n'+newHtml], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'yawmiyati_backup_'+todayKey()+'.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(T().toastBackupExported);
+}
+
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(DATA, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'yawmiyati_'+todayKey()+'.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(T().toastJsonExported);
+}
+
+let pendingImportData = null;
+
+function handleImportFile(file){
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const content = e.target.result;
+      let parsed = null;
+      if(file.name.endsWith('.json')){
+        parsed = JSON.parse(content);
+      } else {
+        const m = content.match(/DATA_EMBED_START =+\s*([\s\S]*?)\s*=+ DATA_EMBED_END/);
+        if(m && m[1]) parsed = JSON.parse(m[1].trim());
+      }
+      if(parsed && parsed.entries && typeof parsed.entries === 'object'){
+        showImportModal(parsed, file.name);
+      } else {
+        showToast(T().toastImportBadFile);
+      }
+    }catch(err){
+      showToast(T().toastImportError);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function showImportModal(parsed, filename){
+  pendingImportData = parsed;
+  const days = Object.keys(parsed.entries).length;
+  const currentDays = Object.keys(DATA.entries).length;
+  document.getElementById('importModalBody').innerHTML =
+    `${T().importFile}: <b style="color:var(--text)">${escapeAttr(filename)}</b><br>
+     ${T().importDaysFound(days)}<br><br>
+     ${T().importWarn(currentDays)}`;
+  document.getElementById('importModal').classList.remove('hidden');
+}
+
+function closeImportModal(){
+  document.getElementById('importModal').classList.add('hidden');
+  pendingImportData = null;
+}
+
+/* ---------- EVENTS (delegated for iOS PWA) ---------- */
+document.addEventListener('click', function(e){
+  const el = e.target.closest('[data-action]');
+  if(!el) return;
+  const action = el.dataset.action;
+
+  if(action==='tab'){ switchTab(el.dataset.tab); }
+  else if(action==='prevDay'){ viewDate.setDate(viewDate.getDate()-1); renderToday(); }
+  else if(action==='nextDay'){
+    const key = fmtKey(viewDate);
+    if(key !== todayKey()){ viewDate.setDate(viewDate.getDate()+1); renderToday(); }
+  }
+  else if(action==='setMood'){
+    const key = fmtKey(viewDate);
+    const entry = getEntry(key);
+    const idx = parseInt(el.dataset.idx);
+    entry.mood = entry.mood===idx ? null : idx;
+    saveData();
+    renderMood();
+  }
+  else if(action==='toggleTask'){
+    const key = fmtKey(viewDate);
+    const entry = getEntry(key);
+    const idx = parseInt(el.dataset.idx);
+    entry.tasks[idx].done = !entry.tasks[idx].done;
+    saveData();
+    renderTasks();
+  }
+  else if(action==='openDay'){
+    const key = el.dataset.key;
+    viewDate = new Date(key+'T12:00:00');
+    switchTab('today');
+    renderToday();
+  }
+  else if(action==='exportBackup'){ exportBackup(); }
+  else if(action==='exportJSON'){ exportJSON(); }
+  else if(action==='triggerImport'){ document.getElementById('importFile').click(); }
+  else if(action==='triggerImportJSON'){ document.getElementById('importJSONFile').click(); }
+  else if(action==='confirmImport'){
+    if(pendingImportData){
+      DATA = pendingImportData;
+      saveData();
+      closeImportModal();
+      renderToday();
+      showToast(T().toastImported);
+      switchTab('archive');
+    }
+  }
+  else if(action==='cancelImport'){ closeImportModal(); }
+  else if(action==='addGratitude'){
+    const key = fmtKey(viewDate);
+    getEntry(key).gratitude.push('');
+    saveData(); renderGratitude();
+  }
+  else if(action==='removeGratitude'){
+    const key = fmtKey(viewDate);
+    const entry = getEntry(key);
+    const idx = parseInt(el.dataset.idx);
+    if(entry.gratitude.length>1){ entry.gratitude.splice(idx,1); saveData(); renderGratitude(); }
+  }
+  else if(action==='addTask'){
+    const key = fmtKey(viewDate);
+    getEntry(key).tasks.push({text:'',done:false});
+    saveData(); renderTasks();
+  }
+  else if(action==='removeTask'){
+    const key = fmtKey(viewDate);
+    const entry = getEntry(key);
+    const idx = parseInt(el.dataset.idx);
+    if(entry.tasks.length>1){ entry.tasks.splice(idx,1); saveData(); renderTasks(); }
+  }
+  else if(action==='requestLocation'){
+    if(!navigator.geolocation){ showToast(T().toastLocError); return; }
+    navigator.geolocation.getCurrentPosition(function(pos){
+      SETTINGS.lat = pos.coords.latitude;
+      SETTINGS.lng = pos.coords.longitude;
+      SETTINGS.tz = -new Date().getTimezoneOffset()/60;
+      SETTINGS.locSet = true;
+      saveSettings();
+      renderLocStatus();
+      renderPrayerCard();
+      showToast(T().toastLocSet);
+    }, function(err){
+      showToast(T().toastLocDenied);
+    });
+  }
+  else if(action==='toggleReminder'){
+    SETTINGS.reminderOn = !SETTINGS.reminderOn;
+    saveSettings();
+    renderReminderSwitch();
+    if(SETTINGS.reminderOn && window.Notification && Notification.permission==='default'){
+      Notification.requestPermission();
+    }
+    showToast(SETTINGS.reminderOn ? T().toastReminderOn : T().toastReminderOff);
+  }
+  else if(action==='saveManualLoc'){
+    const lat = parseFloat(document.getElementById('manualLat').value);
+    const lng = parseFloat(document.getElementById('manualLng').value);
+    if(isNaN(lat) || isNaN(lng) || lat<-90 || lat>90 || lng<-180 || lng>180){
+      showToast(T().toastBadCoords);
+      return;
+    }
+    SETTINGS.lat = lat;
+    SETTINGS.lng = lng;
+    SETTINGS.tz = -new Date().getTimezoneOffset()/60;
+    SETTINGS.locSet = true;
+    saveSettings();
+    renderLocStatus();
+    renderPrayerCard();
+    showToast(T().toastLocSaved);
+  }
+  else if(action==='openLangModal'){ document.getElementById('langModal').classList.remove('hidden'); }
+  else if(action==='closeLangModal'){ document.getElementById('langModal').classList.add('hidden'); }
+  else if(action==='setLang'){
+    applyLanguage(el.dataset.lang);
+    document.getElementById('langModal').classList.add('hidden');
+  }
+});
+
+document.addEventListener('input', function(e){
+  const el = e.target.closest('[data-action]');
+  if(el){
+    const action = el.dataset.action;
+    const key = fmtKey(viewDate);
+    const entry = getEntry(key);
+    if(action==='gratitude'){
+      const idx = parseInt(el.dataset.idx);
+      entry.gratitude[idx] = el.value;
+      if(idx === entry.gratitude.length-1 && el.value.trim()!==''){
+        entry.gratitude.push('');
+        saveData();
+        renderGratitude();
+        const inputs = document.querySelectorAll('#gratitudeList input');
+        if(inputs[idx]) inputs[idx].focus();
+        return;
+      }
+      saveData();
+    } else if(action==='taskText'){
+      const idx = parseInt(el.dataset.idx);
+      entry.tasks[idx].text = el.value;
+      if(idx === entry.tasks.length-1 && el.value.trim()!==''){
+        entry.tasks.push({text:'',done:false});
+        saveData();
+        renderTasks();
+        const inputs = document.querySelectorAll('#taskList input');
+        if(inputs[idx]) inputs[idx].focus();
+        return;
+      }
+      saveData();
+    }
+  }
+  if(e.target.id==='noteBox'){
+    const key = fmtKey(viewDate);
+    getEntry(key).note = e.target.value;
+    saveData();
+  }
+  if(e.target.id==='searchBox'){
+    renderArchive(e.target.value);
+  }
+});
+
+document.getElementById('importFile').addEventListener('change', function(e){
+  if(e.target.files && e.target.files[0]) handleImportFile(e.target.files[0]);
+  e.target.value = '';
+});
+document.getElementById('importJSONFile').addEventListener('change', function(e){
+  if(e.target.files && e.target.files[0]) handleImportFile(e.target.files[0]);
+  e.target.value = '';
+});
+
+/* ---------- INIT ---------- */
+applyLanguage(SETTINGS.lang);
+renderReminderSwitch();
+updateClock();
+setInterval(updateClock, 1000);
+setInterval(function(){
+  renderHeader();
+  renderPrayerCard();
+  checkReminder();
+}, 30000);
+checkReminder();
+</script>
+</body>
+</html>
