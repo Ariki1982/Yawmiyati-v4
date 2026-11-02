@@ -12,9 +12,26 @@
 <style>
 :root{
   --bg:#0a0a0a; --bg2:#141414; --bg3:#1c1c1c;
-  --gold:#d4af37; --gold-dim:#a8862c;
+  --gold:#d4af37; --gold-dim:#a8862c; --accent-bg:#1f1a0d;
   --text:#eee; --text-dim:#999; --border:#2a2a2a;
   --green:#4caf50; --red:#e05a5a;
+}
+html[data-theme="blue"]{
+  --gold:#4fa3d8; --gold-dim:#3b7ea8; --accent-bg:#0f1f2b;
+}
+html[data-theme="green"]{
+  --gold:#5fc27a; --gold-dim:#4a9c60; --accent-bg:#10241a;
+}
+html[data-theme="purple"]{
+  --gold:#b28cd6; --gold-dim:#8c69ab; --accent-bg:#211a2b;
+}
+html[data-theme="rose"]{
+  --gold:#e08bb0; --gold-dim:#b56a8b; --accent-bg:#2b1a22;
+}
+html[data-theme="light"]{
+  --bg:#f4f1ea; --bg2:#ffffff; --bg3:#efece3;
+  --gold:#b8860b; --gold-dim:#96700a; --accent-bg:#f3e6c4;
+  --text:#1c1c1c; --text-dim:#6b6b6b; --border:#ddd6c5;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{
@@ -39,7 +56,7 @@ nav button{
   flex:1; background:var(--bg3); border:1px solid var(--border); color:var(--text-dim);
   padding:8px 4px; border-radius:8px; font-size:13px; cursor:pointer;
 }
-nav button.active{border-color:var(--gold); color:var(--gold); background:#1f1a0d;}
+nav button.active{border-color:var(--gold); color:var(--gold); background:var(--accent-bg);}
 main{padding:16px; max-width:640px; margin:0 auto;}
 .card{background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:16px; margin-bottom:14px;}
 .card h2{margin:0 0 12px 0; font-size:15px; color:var(--gold-dim); display:flex; align-items:center; gap:8px;}
@@ -53,7 +70,7 @@ main{padding:16px; max-width:640px; margin:0 auto;}
   flex:1; background:var(--bg3); border:1px solid var(--border); border-radius:10px;
   padding:10px 0; font-size:24px; cursor:pointer; opacity:.55;
 }
-.mood-btn.selected{border-color:var(--gold); background:#1f1a0d; opacity:1;}
+.mood-btn.selected{border-color:var(--gold); background:var(--accent-bg); opacity:1;}
 .gratitude-item{display:flex; align-items:center; gap:8px; margin-bottom:8px;}
 .gratitude-item .num{color:var(--gold); font-size:13px; width:16px;}
 input[type=text], textarea{
@@ -108,7 +125,7 @@ input[type=file]{display:none;}
 }
 .prayer-strip{display:flex; justify-content:space-between; gap:4px;}
 .prayer-item{flex:1; text-align:center; background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:8px 2px;}
-.prayer-item.next{border-color:var(--gold); background:#1f1a0d;}
+.prayer-item.next{border-color:var(--gold); background:var(--accent-bg);}
 .prayer-item .pn{font-size:11px; color:var(--text-dim);}
 .prayer-item.next .pn{color:var(--gold);}
 .prayer-item .pt{font-size:12px; margin-top:3px; direction:ltr;}
@@ -116,11 +133,36 @@ input[type=file]{display:none;}
 .reminder-row{display:flex; align-items:center; justify-content:space-between; margin-top:10px;}
 .switch{width:44px; height:24px; border-radius:12px; background:var(--bg3); border:1px solid var(--border); position:relative; cursor:pointer; flex-shrink:0;}
 .switch .knob{position:absolute; top:2px; right:2px; width:18px; height:18px; border-radius:50%; background:var(--text-dim); transition:.2s;}
-.switch.on{background:#1f1a0d; border-color:var(--gold);}
+.switch.on{background:var(--accent-bg); border-color:var(--gold);}
 .switch.on .knob{background:var(--gold); right:22px;}
 .settings-label{font-size:13px; color:var(--text);}
 .settings-sub{font-size:11px; color:var(--text-dim); margin-top:2px;}
 .loc-status{font-size:12px; color:var(--text-dim); margin-top:8px;}
+.occ-btn{width:30px; height:30px; border-radius:8px; border:1px solid var(--gold-dim); display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; font-size:16px; background:var(--bg3);}
+.occ-btn.joy{border-color:var(--green);}
+.occ-btn.sad{border-color:#7a8ca8;}
+.occ-btn.other{border-color:var(--gold-dim);}
+.prog{font-size:12px; color:var(--text-dim); font-weight:normal;}
+.mood-bar-row{display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+.mood-bar-row .e{width:24px; font-size:16px; text-align:center;}
+.mood-bar{flex:1; height:8px; background:var(--bg3); border-radius:4px; overflow:hidden;}
+.mood-bar i{display:block; height:100%; background:var(--gold); border-radius:4px;}
+.mood-bar-row .c{width:24px; text-align:center; font-size:12px; color:var(--text-dim);}
+.insight-row{flex-wrap:wrap; margin:12px 0 0 0;}
+.insight-row .stat{flex:1 1 40%;}
+.nudge{border-color:var(--gold-dim);}
+.day-badges{font-size:11px; color:var(--gold); margin-top:3px;}
+.theme-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:10px;}
+.theme-opt{
+  background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:10px 4px;
+  text-align:center; cursor:pointer; font-size:11px; color:var(--text-dim);
+}
+.theme-opt.active{border-color:var(--gold); color:var(--gold);}
+.theme-swatch{
+  width:36px; height:36px; border-radius:50%; margin:0 auto 6px auto;
+  display:flex; align-items:center; justify-content:center; border:1px solid var(--border);
+}
+.theme-swatch span{width:16px; height:16px; border-radius:50%; display:block;}
 .modal-overlay{
   position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200;
   display:flex; align-items:center; justify-content:center; padding:20px;
@@ -138,6 +180,7 @@ input[type=file]{display:none;}
   <div style="position:relative;">
     <h1 data-i18n="appTitle">📔 يومياتي</h1>
     <button data-action="openLangModal" style="position:absolute; left:0; top:0; background:var(--bg3); border:1px solid var(--border); color:var(--gold); border-radius:8px; padding:5px 9px; font-size:13px; cursor:pointer;">🌐</button>
+    <button data-action="openThemeModal" style="position:absolute; right:0; top:0; background:var(--bg3); border:1px solid var(--border); color:var(--gold); border-radius:8px; padding:5px 9px; font-size:13px; cursor:pointer;">🎨</button>
   </div>
   <div class="dates" id="headerDates">—</div>
   <div class="clock" id="liveClock">—</div>
@@ -153,12 +196,18 @@ input[type=file]{display:none;}
 
   <!-- TODAY TAB -->
   <div id="tab-today">
+    <div class="card nudge hidden" id="backupNudge">
+      <div class="settings-label" id="backupNudgeText"></div>
+      <div class="btn-row"><div class="btn primary" data-action="exportBackup" data-i18n="nudgeBtn">تصدير الآن</div></div>
+    </div>
+
     <div class="card">
       <div class="day-nav">
         <button data-action="prevDay">‹</button>
         <div class="day-label">
           <div class="g" id="viewDateG">—</div>
           <div class="h" id="viewDateH">—</div>
+          <div class="day-badges" id="dayBadges"></div>
         </div>
         <button data-action="nextDay" id="nextDayBtn">›</button>
       </div>
@@ -183,9 +232,17 @@ input[type=file]{display:none;}
     </div>
 
     <div class="card">
-      <h2 data-i18n="tasksLabel">✅ المهام</h2>
+      <h2 data-i18n="occasionsLabel">🎉 مناسبات اليوم</h2>
+      <div class="settings-sub" data-i18n="occasionHint" style="margin:-6px 0 10px 0;">اضغط الأيقونة لتغيير النوع: 🎉 فرح · 🕊️ حزن · 📌 أخرى</div>
+      <div id="occasionList"></div>
+      <div class="add-btn" data-action="addOccasion" data-i18n="addOccasionBtn">+ إضافة مناسبة</div>
+    </div>
+
+    <div class="card">
+      <h2><span data-i18n="tasksLabel">✅ المهام</span> <span class="prog" id="taskProgress"></span></h2>
       <div id="taskList"></div>
       <div class="add-btn" data-action="addTask" data-i18n="addTaskBtn">+ إضافة مهمة</div>
+      <div class="add-btn" data-action="carryTasks" data-i18n="carryTasksBtn">↪ ترحيل المهام غير المنجزة من أمس</div>
     </div>
 
     <div class="card">
@@ -196,6 +253,11 @@ input[type=file]{display:none;}
 
   <!-- ARCHIVE TAB -->
   <div id="tab-archive" class="hidden">
+    <div class="card">
+      <h2 data-i18n="insightsTitle">📊 آخر ٣٠ يومًا</h2>
+      <div id="moodBars"></div>
+      <div class="stat-row insight-row" id="insightRow"></div>
+    </div>
     <div class="card">
       <div class="stat-row">
         <div class="stat"><div class="n" id="statTotal">0</div><div class="l" data-i18n="statDays">يوم مسجل</div></div>
@@ -222,7 +284,7 @@ input[type=file]{display:none;}
         <div class="btn" data-action="saveManualLoc" data-i18n="saveLocBtn">حفظ الموقع يدويًا</div>
       </div>
       <div class="settings-sub" data-i18n="locNote" style="margin-top:6px;">
-        ملاحظة: تحديد الموقع التلقائي لا يعمل عند فتح الملف كرابط data: (كما يظهر بشريط العنوان). ارفع الملف على GitHub Pages أو افتحه من تطبيق الملفات ليعمل تلقائيًا — أو استخدم الإدخال اليدوي أعلاه.
+‎        ملاحظة: تحديد الموقع التلقائي لا يعمل عند فتح الملف كرابط data: (كما يظهر بشريط العنوان). ارفع الملف على GitHub Pages أو افتحه من تطبيق الملفات ليعمل تلقائيًا — أو استخدم الإدخال اليدوي أعلاه.
       </div>
     </div>
     <div class="card">
@@ -281,6 +343,41 @@ input[type=file]{display:none;}
   </div>
 </div>
 
+<div class="modal-overlay hidden" id="themeModal">
+  <div class="modal-box">
+    <h3 data-i18n="themeModalTitle">اختر المظهر</h3>
+    <div class="theme-grid">
+      <div class="theme-opt" data-action="setTheme" data-theme="gold">
+        <div class="theme-swatch" style="background:#0a0a0a;"><span style="background:#d4af37;"></span></div>
+        <div data-i18n="themeGold">ذهبي داكن</div>
+      </div>
+      <div class="theme-opt" data-action="setTheme" data-theme="blue">
+        <div class="theme-swatch" style="background:#0a0a0a;"><span style="background:#4fa3d8;"></span></div>
+        <div data-i18n="themeBlue">أزرق داكن</div>
+      </div>
+      <div class="theme-opt" data-action="setTheme" data-theme="green">
+        <div class="theme-swatch" style="background:#0a0a0a;"><span style="background:#5fc27a;"></span></div>
+        <div data-i18n="themeGreen">أخضر داكن</div>
+      </div>
+      <div class="theme-opt" data-action="setTheme" data-theme="purple">
+        <div class="theme-swatch" style="background:#0a0a0a;"><span style="background:#b28cd6;"></span></div>
+        <div data-i18n="themePurple">بنفسجي داكن</div>
+      </div>
+      <div class="theme-opt" data-action="setTheme" data-theme="rose">
+        <div class="theme-swatch" style="background:#0a0a0a;"><span style="background:#e08bb0;"></span></div>
+        <div data-i18n="themeRose">وردي داكن</div>
+      </div>
+      <div class="theme-opt" data-action="setTheme" data-theme="light">
+        <div class="theme-swatch" style="background:#f4f1ea;"><span style="background:#b8860b;"></span></div>
+        <div data-i18n="themeLight">فاتح</div>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:10px;">
+      <div class="btn" data-action="closeThemeModal" data-i18n="cancelBtn">إلغاء</div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -313,6 +410,20 @@ const STRINGS = {
     exportJsonBtn:'تنزيل JSON', importJsonBtn:'استيراد من JSON',
     importModalTitle:'تأكيد الاستيراد', cancelBtn:'إلغاء', confirmImportBtn:'استبدال البيانات',
     langModalTitle:'اختر اللغة / Choose Language',
+    themeModalTitle:'اختر المظهر',
+    occasionsLabel:'🎉 مناسبات اليوم', occasionHint:'اضغط الأيقونة لتغيير النوع: 🎉 فرح · 🕊️ حزن · 📌 أخرى',
+    occasionPh:'مناسبة أو حدث (زواج، عزاء، تخرّج...)', addOccasionBtn:'+ إضافة مناسبة',
+    carryTasksBtn:'↪ ترحيل المهام غير المنجزة من أمس',
+    toastCarried:(n)=>`تم ترحيل ${n} مهمة ✓`, toastNoCarry:'لا توجد مهام غير منجزة من أمس',
+    insightsTitle:'📊 آخر ٣٠ يومًا', insightNoMood:'لم تسجّل مزاجًا خلال آخر ٣٠ يومًا',
+    insTasks:'مهام منجزة', insGratitude:'سطور امتنان', insJoy:'مناسبات فرح', insSad:'مناسبات حزن',
+    nudgeNever:'لم تُصدّر نسخة احتياطية بعد — بياناتك محفوظة في هذا المتصفح فقط.',
+    nudgeDays:(n)=>`مضى ${n} يوم على آخر نسخة احتياطية.`, nudgeBtn:'تصدير الآن',
+    badgeFriday:'يوم الجمعة', badgeWhite:'من الأيام البيض', badgeRamadan:'شهر رمضان', badgeEidFitr:'عيد الفطر',
+    badgeArafah:'يوم عرفة', badgeEidAdha:'عيد الأضحى', badgeTashreeq:'أيام التشريق', badgeNewYear:'رأس السنة الهجرية',
+    badgeTasua:'تاسوعاء', badgeAshura:'عاشوراء',
+    themeGold:'ذهبي داكن', themeBlue:'أزرق داكن', themeGreen:'أخضر داكن',
+    themePurple:'بنفسجي داكن', themeRose:'وردي داكن', themeLight:'فاتح',
     emptyArchive:'لا توجد أيام مسجلة بعد',
     toastBackupExported:'تم تصدير النسخة الاحتياطية ✓', toastJsonExported:'تم تصدير JSON ✓',
     toastImportBadFile:'لم يتم العثور على بيانات صالحة بالملف', toastImportError:'خطأ في قراءة الملف — تأكد إنه ملف JSON أو نسخة صحيحة',
@@ -349,6 +460,20 @@ const STRINGS = {
     exportJsonBtn:'Download JSON', importJsonBtn:'Import from JSON',
     importModalTitle:'Confirm Import', cancelBtn:'Cancel', confirmImportBtn:'Replace data',
     langModalTitle:'Choose Language / اختر اللغة',
+    themeModalTitle:'Choose Theme',
+    occasionsLabel:'🎉 Today\'s occasions', occasionHint:'Tap the icon to change the type: 🎉 joyful · 🕊️ sad · 📌 other',
+    occasionPh:'An occasion or event (wedding, condolence, graduation...)', addOccasionBtn:'+ Add occasion',
+    carryTasksBtn:'↪ Carry over unfinished tasks from yesterday',
+    toastCarried:(n)=>`${n} task(s) carried over ✓`, toastNoCarry:'No unfinished tasks from yesterday',
+    insightsTitle:'📊 Last 30 days', insightNoMood:'No mood logged in the last 30 days',
+    insTasks:'tasks done', insGratitude:'gratitude lines', insJoy:'joyful occasions', insSad:'sad occasions',
+    nudgeNever:'You have not exported a backup yet — your data is stored in this browser only.',
+    nudgeDays:(n)=>`It has been ${n} day(s) since your last backup.`, nudgeBtn:'Export now',
+    badgeFriday:'Friday', badgeWhite:'One of the White Days', badgeRamadan:'Ramadan', badgeEidFitr:'Eid al-Fitr',
+    badgeArafah:'Day of Arafah', badgeEidAdha:'Eid al-Adha', badgeTashreeq:'Days of Tashreeq', badgeNewYear:'Islamic New Year',
+    badgeTasua:'Tasua', badgeAshura:'Ashura',
+    themeGold:'Dark Gold', themeBlue:'Dark Blue', themeGreen:'Dark Green',
+    themePurple:'Dark Purple', themeRose:'Dark Rose', themeLight:'Light',
     emptyArchive:'No days logged yet',
     toastBackupExported:'Backup exported ✓', toastJsonExported:'JSON exported ✓',
     toastImportBadFile:'No valid data found in the file', toastImportError:'Error reading the file — make sure it is a valid JSON or backup file',
@@ -384,7 +509,7 @@ function loadData(){
     if(ls) return JSON.parse(ls);
   }catch(e){}
   const embedded = loadEmbeddedData();
-  if(embedded) return embedded;
+  if(embedded) return {entries: embedded.entries};
   return {entries:{}};
 }
 
@@ -412,25 +537,49 @@ function saveData(){
   try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA)); }catch(e){}
 }
 
+function normEntry(e){
+  e = e || {};
+  if(e.mood===undefined) e.mood = null;
+  if(!Array.isArray(e.gratitude) || !e.gratitude.length) e.gratitude = ['','',''];
+  if(!Array.isArray(e.tasks) || !e.tasks.length) e.tasks = [{text:'',done:false},{text:'',done:false},{text:'',done:false}];
+  if(!Array.isArray(e.occasions) || !e.occasions.length) e.occasions = [{type:'joy',text:''}];
+  if(typeof e.note !== 'string') e.note = '';
+  return e;
+}
 function getEntry(key){
-  if(!DATA.entries[key]){
-    DATA.entries[key] = {mood:null, gratitude:['','',''], tasks:[{text:'',done:false},{text:'',done:false},{text:'',done:false}], note:''};
-  }
+  DATA.entries[key] = normEntry(DATA.entries[key]);
   return DATA.entries[key];
+}
+function entryHasContent(e){
+  if(!e) return false;
+  return (e.mood!==null && e.mood!==undefined) || !!e.note ||
+    (e.gratitude||[]).some(g=>g) || (e.tasks||[]).some(t=>t.text) || (e.occasions||[]).some(o=>o.text);
 }
 
 /* ---------- SETTINGS (location + reminder) ---------- */
 const SETTINGS_KEY = 'yawmiyati_settings';
+const DEFAULT_SETTINGS = {lat:18.62, lng:42.08, tz:3, locSet:true, reminderOn:false, lastNotified:null, lastBackup:null, lang:'ar', theme:'gold'};
 function loadSettings(){
   try{
     const s = localStorage.getItem(SETTINGS_KEY);
-    if(s) return Object.assign({lat:18.62, lng:42.08, tz:3, locSet:true, reminderOn:false, lastNotified:null, lang:'ar'}, JSON.parse(s));
+    if(s) return Object.assign({}, DEFAULT_SETTINGS, JSON.parse(s));
   }catch(e){}
-  return {lat:18.62, lng:42.08, tz:3, locSet:true, reminderOn:false, lastNotified:null, lang:'ar'};
+  const emb = loadEmbeddedData();
+  if(emb && emb.settings) return Object.assign({}, DEFAULT_SETTINGS, emb.settings);
+  return Object.assign({}, DEFAULT_SETTINGS);
 }
 let SETTINGS = loadSettings();
 function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(SETTINGS)); }catch(e){} }
 function T(){ return STRINGS[SETTINGS.lang] || STRINGS.ar; }
+
+function applyTheme(theme){
+  SETTINGS.theme = theme;
+  saveSettings();
+  document.documentElement.setAttribute('data-theme', theme);
+  document.querySelectorAll('.theme-opt').forEach(el=>{
+    el.classList.toggle('active', el.dataset.theme===theme);
+  });
+}
 
 function applyLanguage(lang){
   if(!STRINGS[lang]) return;
@@ -524,7 +673,9 @@ function computePrayerTimes(date, lat, lng, tz){
   const dhuhr = midDay(jd, lng, tz);
   const asr = asrTime(1, jd, lat, lng, tz);
   const maghrib = sunAngleTime(0.833, jd, lat, lng, tz, 'cw');
-  const isha = maghrib===null ? null : fixHour(maghrib + 90/60);
+  const hp = hijriParts(date);
+  const ishaGap = (hp && hp.m===9) ? 120 : 90;
+  const isha = maghrib===null ? null : fixHour(maghrib + ishaGap/60);
   return {'الفجر':fajr, 'الظهر':dhuhr, 'العصر':asr, 'المغرب':maghrib, 'العشاء':isha};
 }function hoursToHM(t){
   if(t===null || t===undefined) return {h:0,m:0,label:'—'};
@@ -622,6 +773,7 @@ function renderDayNav(){
   const key = fmtKey(viewDate);
   document.getElementById('viewDateG').textContent = gregorianStr(viewDate);
   document.getElementById('viewDateH').textContent = hijriStr(viewDate);
+  document.getElementById('dayBadges').textContent = dayBadges(viewDate).join(' · ');
   const isToday = key === todayKey();
   document.getElementById('nextDayBtn').style.opacity = isToday ? '0.3' : '1';
   document.getElementById('nextDayBtn').style.pointerEvents = isToday ? 'none' : 'auto';
@@ -649,6 +801,14 @@ function renderGratitude(){
   ).join('');
 }
 
+function updateTaskProgress(){
+  const entry = getEntry(fmtKey(viewDate));
+  const filled = entry.tasks.filter(t=>t.text.trim());
+  const done = filled.filter(t=>t.done).length;
+  const el = document.getElementById('taskProgress');
+  if(el) el.textContent = filled.length ? `${done}/${filled.length}` : '';
+}
+
 function renderTasks(){
   const key = fmtKey(viewDate);
   const entry = getEntry(key);
@@ -660,6 +820,39 @@ function renderTasks(){
       ${entry.tasks.length>1 ? `<div class="row-remove" data-action="removeTask" data-idx="${i}">×</div>` : ''}
     </div>`
   ).join('');
+  updateTaskProgress();
+}
+
+const OCC_TYPES = ['joy','sad','other'];
+const OCC_ICONS = {joy:'🎉', sad:'🕊️', other:'📌'};
+
+function renderOccasions(){
+  const entry = getEntry(fmtKey(viewDate));
+  const box = document.getElementById('occasionList');
+  box.innerHTML = entry.occasions.map((o,i)=>
+    `<div class="task-row">
+      <div class="occ-btn ${o.type}" data-action="cycleOccasion" data-idx="${i}">${OCC_ICONS[o.type]||'📌'}</div>
+      <input type="text" data-action="occasionText" data-idx="${i}" value="${escapeAttr(o.text)}" placeholder="${escapeAttr(T().occasionPh)}">
+      ${entry.occasions.length>1 ? `<div class="row-remove" data-action="removeOccasion" data-idx="${i}">×</div>` : ''}
+    </div>`
+  ).join('');
+}
+
+function carryTasks(){
+  const entry = getEntry(fmtKey(viewDate));
+  const prev = new Date(viewDate); prev.setDate(prev.getDate()-1);
+  const pe = DATA.entries[fmtKey(prev)];
+  const existing = new Set(entry.tasks.map(t=>t.text.trim()).filter(Boolean));
+  const todo = pe ? (pe.tasks||[]).filter(t=>t.text && t.text.trim() && !t.done && !existing.has(t.text.trim())) : [];
+  if(!todo.length){ showToast(T().toastNoCarry); return; }
+  todo.forEach(t=>{
+    const empty = entry.tasks.findIndex(x=>!x.text.trim());
+    if(empty>=0) entry.tasks[empty] = {text:t.text, done:false};
+    else entry.tasks.push({text:t.text, done:false});
+  });
+  if(entry.tasks[entry.tasks.length-1].text.trim()) entry.tasks.push({text:'',done:false});
+  saveData(); renderTasks();
+  showToast(T().toastCarried(todo.length));
 }
 
 function renderNote(){
@@ -670,8 +863,10 @@ function renderNote(){
 
 function renderToday(){
   renderDayNav();
+  renderBackupNudge();
   renderMood();
   renderGratitude();
+  renderOccasions();
   renderTasks();
   renderNote();
 }
@@ -687,8 +882,7 @@ function computeStreak(){
   while(true){
     const key = fmtKey(d);
     const e = DATA.entries[key];
-    const hasContent = e && (e.mood!==null || e.note || e.gratitude.some(g=>g) || e.tasks.some(t=>t.text));
-    if(hasContent){ streak++; d.setDate(d.getDate()-1); }
+    if(entryHasContent(e)){ streak++; d.setDate(d.getDate()-1); }
     else break;
   }
   return streak;
@@ -696,27 +890,20 @@ function computeStreak(){
 
 function renderArchive(filter){
   const list = document.getElementById('archiveList');
-  const keys = Object.keys(DATA.entries).sort().reverse();
-  document.getElementById('statTotal').textContent = keys.filter(k=>{
-    const e = DATA.entries[k];
-    return e.mood!==null || e.note || e.gratitude.some(g=>g) || e.tasks.some(t=>t.text);
-  }).length;
+  const keys = Object.keys(DATA.entries).sort().reverse().filter(k=>entryHasContent(DATA.entries[k]));
+  document.getElementById('statTotal').textContent = keys.length;
   document.getElementById('statStreak').textContent = computeStreak();
+  renderInsights();
 
   let filtered = keys;
-  if(filter){
+  if(filter && filter.trim()){
     const f = filter.trim().toLowerCase();
     filtered = keys.filter(k=>{
       const e = DATA.entries[k];
-      const hay = [e.note, ...e.gratitude, ...e.tasks.map(t=>t.text)].join(' ').toLowerCase();
+      const hay = [e.note||'', ...(e.gratitude||[]), ...(e.tasks||[]).map(t=>t.text), ...(e.occasions||[]).map(o=>o.text)].join(' ').toLowerCase();
       return hay.includes(f);
     });
   }
-
-  filtered = filtered.filter(k=>{
-    const e = DATA.entries[k];
-    return e.mood!==null || e.note || e.gratitude.some(g=>g) || e.tasks.some(t=>t.text);
-  });
 
   if(filtered.length===0){
     list.innerHTML = `<div class="empty">${T().emptyArchive}</div>`;
@@ -726,15 +913,94 @@ function renderArchive(filter){
   list.innerHTML = filtered.map(k=>{
     const e = DATA.entries[k];
     const d = new Date(k+'T12:00:00');
-    const snippet = e.note ? e.note.slice(0,50) : (e.gratitude.filter(g=>g)[0] || '');
+    const snippet = e.note ? e.note.slice(0,50) : ((e.gratitude||[]).filter(g=>g)[0] || '');
+    const occ = (e.occasions||[]).filter(o=>o.text).map(o=>OCC_ICONS[o.type]||'📌').join(' ');
     return `<div class="archive-item" data-action="openDay" data-key="${k}">
       <div>
         <div class="d">${gregorianStr(d)}</div>
         ${snippet ? `<div class="snippet">${escapeAttr(snippet)}</div>` : ''}
+        ${occ ? `<div class="snippet">${occ}</div>` : ''}
       </div>
       <div class="m">${e.mood!==null && e.mood!==undefined ? MOODS[e.mood] : '—'}</div>
     </div>`;
   }).join('');
+}
+
+function renderInsights(){
+  const counts = [0,0,0,0,0,0];
+  let tasksTotal = 0, tasksDone = 0, grat = 0, joy = 0, sad = 0;
+  const base = new Date();
+  for(let i=0;i<30;i++){
+    const d = new Date(base); d.setDate(base.getDate()-i);
+    const e = DATA.entries[fmtKey(d)];
+    if(!e) continue;
+    if(typeof e.mood==='number' && counts[e.mood]!==undefined) counts[e.mood]++;
+    (e.tasks||[]).forEach(t=>{ if(t.text && t.text.trim()){ tasksTotal++; if(t.done) tasksDone++; } });
+    grat += (e.gratitude||[]).filter(g=>g && g.trim()).length;
+    (e.occasions||[]).forEach(o=>{ if(o.text && o.text.trim()){ if(o.type==='joy') joy++; else if(o.type==='sad') sad++; } });
+  }
+  const max = Math.max(...counts);
+  const bars = document.getElementById('moodBars');
+  if(max===0){
+    bars.innerHTML = `<div class="empty" style="padding:10px 0">${T().insightNoMood}</div>`;
+  } else {
+    bars.innerHTML = counts.map((c,i)=>
+      `<div class="mood-bar-row"><span class="e">${MOODS[i]}</span><div class="mood-bar"><i style="width:${Math.round(c/max*100)}%"></i></div><span class="c">${c}</span></div>`
+    ).join('');
+  }
+  const pct = tasksTotal ? Math.round(tasksDone/tasksTotal*100) : 0;
+  document.getElementById('insightRow').innerHTML = [
+    [`${tasksDone}/${tasksTotal}`, T().insTasks + (tasksTotal ? ` (${pct}%)` : '')],
+    [grat, T().insGratitude],
+    [joy, T().insJoy],
+    [sad, T().insSad]
+  ].map(([n,l])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+}
+
+/* ---------- HIJRI BADGES ---------- */
+function hijriParts(d){
+  try{
+    const parts = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric', month:'numeric'}).formatToParts(d);
+    return {
+      d: parseInt(parts.find(p=>p.type==='day').value, 10),
+      m: parseInt(parts.find(p=>p.type==='month').value, 10)
+    };
+  }catch(e){ return null; }
+}
+function dayBadges(d){
+  const t = T(), out = [];
+  if(d.getDay()===5) out.push(t.badgeFriday);
+  const h = hijriParts(d);
+  if(h){
+    if(h.m===9) out.push(t.badgeRamadan);
+    if(h.m===10 && h.d===1) out.push(t.badgeEidFitr);
+    if(h.m===12 && h.d===9) out.push(t.badgeArafah);
+    if(h.m===12 && h.d===10) out.push(t.badgeEidAdha);
+    if(h.m===12 && h.d>=11 && h.d<=13) out.push(t.badgeTashreeq);
+    if(h.m===1 && h.d===1) out.push(t.badgeNewYear);
+    if(h.m===1 && h.d===9) out.push(t.badgeTasua);
+    if(h.m===1 && h.d===10) out.push(t.badgeAshura);
+    if(h.d>=13 && h.d<=15 && h.m!==9 && !(h.m===12 && h.d===13)) out.push(t.badgeWhite);
+  }
+  return out;
+}
+
+/* ---------- BACKUP NUDGE ---------- */
+function daysSince(k){
+  return Math.floor((new Date(todayKey()+'T12:00:00') - new Date(k+'T12:00:00')) / 86400000);
+}
+function renderBackupNudge(){
+  const el = document.getElementById('backupNudge');
+  if(!el) return;
+  const total = Object.keys(DATA.entries).filter(k=>entryHasContent(DATA.entries[k])).length;
+  let msg = '';
+  if(total >= 3){
+    if(!SETTINGS.lastBackup) msg = T().nudgeNever;
+    else { const n = daysSince(SETTINGS.lastBackup); if(n >= 7) msg = T().nudgeDays(n); }
+  }
+  el.classList.toggle('hidden', !msg);
+  const txt = document.getElementById('backupNudgeText');
+  if(txt) txt.textContent = msg;
 }
 
 /* ---------- TABS ---------- */
@@ -751,14 +1017,13 @@ function switchTab(tab){
 
 /* ---------- EXPORT / IMPORT ---------- */
 function exportBackup(){
+  SETTINGS.lastBackup = todayKey();
+  saveSettings();
   const html = document.documentElement.outerHTML;
-  const dataStr = JSON.stringify(DATA);
-  const newHtml = html.replace(
-    /DATA_EMBED_START =+\s*[\s\S]*?\s*=+ DATA_EMBED_END/,
-    `DATA_EMBED_START =========
-${dataStr}
-========= DATA_EMBED_END`
-  );
+  const dataStr = JSON.stringify({entries: DATA.entries, settings: SETTINGS})
+    .replace(/</g,'\\u003c').replace(/\//g,'\\/');
+  const block = 'DATA_EMBED_START =========\n' + dataStr + '\n========= DATA_EMBED_END';
+  const newHtml = html.replace(/DATA_EMBED_START =+\s*[\s\S]*?\s*=+ DATA_EMBED_END/, ()=>block);
   const blob = new Blob(['<!DOCTYPE html>\n'+newHtml], {type:'text/html'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -768,11 +1033,14 @@ ${dataStr}
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+  renderBackupNudge();
   showToast(T().toastBackupExported);
 }
 
 function exportJSON(){
-  const blob = new Blob([JSON.stringify(DATA, null, 2)], {type:'application/json'});
+  SETTINGS.lastBackup = todayKey();
+  saveSettings();
+  const blob = new Blob([JSON.stringify({entries: DATA.entries}, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -781,6 +1049,7 @@ function exportJSON(){
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+  renderBackupNudge();
   showToast(T().toastJsonExported);
 }
 
@@ -812,8 +1081,8 @@ function handleImportFile(file){
 
 function showImportModal(parsed, filename){
   pendingImportData = parsed;
-  const days = Object.keys(parsed.entries).length;
-  const currentDays = Object.keys(DATA.entries).length;
+  const days = Object.keys(parsed.entries).filter(k=>entryHasContent(parsed.entries[k])).length;
+  const currentDays = Object.keys(DATA.entries).filter(k=>entryHasContent(DATA.entries[k])).length;
   document.getElementById('importModalBody').innerHTML =
     `${T().importFile}: <b style="color:var(--text)">${escapeAttr(filename)}</b><br>
      ${T().importDaysFound(days)}<br><br>
@@ -866,7 +1135,9 @@ document.addEventListener('click', function(e){
   else if(action==='triggerImportJSON'){ document.getElementById('importJSONFile').click(); }
   else if(action==='confirmImport'){
     if(pendingImportData){
-      DATA = pendingImportData;
+      const imported = {entries:{}};
+      Object.keys(pendingImportData.entries).forEach(k=>{ imported.entries[k] = normEntry(pendingImportData.entries[k]); });
+      DATA = imported;
       saveData();
       closeImportModal();
       renderToday();
@@ -886,6 +1157,24 @@ document.addEventListener('click', function(e){
     const idx = parseInt(el.dataset.idx);
     if(entry.gratitude.length>1){ entry.gratitude.splice(idx,1); saveData(); renderGratitude(); }
   }
+  else if(action==='addOccasion'){
+    getEntry(fmtKey(viewDate)).occasions.push({type:'joy',text:''});
+    saveData(); renderOccasions();
+  }
+  else if(action==='removeOccasion'){
+    const entry = getEntry(fmtKey(viewDate));
+    const idx = parseInt(el.dataset.idx);
+    if(entry.occasions.length>1){ entry.occasions.splice(idx,1); saveData(); renderOccasions(); }
+  }
+  else if(action==='cycleOccasion'){
+    const entry = getEntry(fmtKey(viewDate));
+    const o = entry.occasions[parseInt(el.dataset.idx)];
+    if(o){
+      o.type = OCC_TYPES[(OCC_TYPES.indexOf(o.type)+1) % OCC_TYPES.length];
+      saveData(); renderOccasions();
+    }
+  }
+  else if(action==='carryTasks'){ carryTasks(); }
   else if(action==='addTask'){
     const key = fmtKey(viewDate);
     getEntry(key).tasks.push({text:'',done:false});
@@ -943,43 +1232,60 @@ document.addEventListener('click', function(e){
     applyLanguage(el.dataset.lang);
     document.getElementById('langModal').classList.add('hidden');
   }
+  else if(action==='openThemeModal'){
+    document.querySelectorAll('.theme-opt').forEach(o=>o.classList.toggle('active', o.dataset.theme===SETTINGS.theme));
+    document.getElementById('themeModal').classList.remove('hidden');
+  }
+  else if(action==='closeThemeModal'){ document.getElementById('themeModal').classList.add('hidden'); }
+  else if(action==='setTheme'){
+    applyTheme(el.dataset.theme);
+  }
 });
+
+function focusEnd(sel, idx){
+  const inp = document.querySelectorAll(sel)[idx];
+  if(inp){
+    inp.focus();
+    const n = inp.value.length;
+    try{ inp.setSelectionRange(n, n); }catch(err){}
+  }
+}
 
 document.addEventListener('input', function(e){
   const el = e.target.closest('[data-action]');
   if(el){
     const action = el.dataset.action;
-    const key = fmtKey(viewDate);
-    const entry = getEntry(key);
+    const entry = getEntry(fmtKey(viewDate));
+    const idx = parseInt(el.dataset.idx);
     if(action==='gratitude'){
-      const idx = parseInt(el.dataset.idx);
       entry.gratitude[idx] = el.value;
       if(idx === entry.gratitude.length-1 && el.value.trim()!==''){
         entry.gratitude.push('');
-        saveData();
-        renderGratitude();
-        const inputs = document.querySelectorAll('#gratitudeList input');
-        if(inputs[idx]) inputs[idx].focus();
+        saveData(); renderGratitude(); focusEnd('#gratitudeList input', idx);
         return;
       }
       saveData();
     } else if(action==='taskText'){
-      const idx = parseInt(el.dataset.idx);
       entry.tasks[idx].text = el.value;
       if(idx === entry.tasks.length-1 && el.value.trim()!==''){
         entry.tasks.push({text:'',done:false});
-        saveData();
-        renderTasks();
-        const inputs = document.querySelectorAll('#taskList input');
-        if(inputs[idx]) inputs[idx].focus();
+        saveData(); renderTasks(); focusEnd('#taskList input', idx);
+        return;
+      }
+      saveData();
+      updateTaskProgress();
+    } else if(action==='occasionText'){
+      entry.occasions[idx].text = el.value;
+      if(idx === entry.occasions.length-1 && el.value.trim()!==''){
+        entry.occasions.push({type:'joy',text:''});
+        saveData(); renderOccasions(); focusEnd('#occasionList input', idx);
         return;
       }
       saveData();
     }
   }
   if(e.target.id==='noteBox'){
-    const key = fmtKey(viewDate);
-    getEntry(key).note = e.target.value;
+    getEntry(fmtKey(viewDate)).note = e.target.value;
     saveData();
   }
   if(e.target.id==='searchBox'){
@@ -997,6 +1303,7 @@ document.getElementById('importJSONFile').addEventListener('change', function(e)
 });
 
 /* ---------- INIT ---------- */
+applyTheme(SETTINGS.theme);
 applyLanguage(SETTINGS.lang);
 renderReminderSwitch();
 updateClock();
